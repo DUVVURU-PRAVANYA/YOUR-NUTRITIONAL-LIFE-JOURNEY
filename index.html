@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Nutritional Life Journey</title>
+  <style>
+    body {
+      font-family: 'Trebuchet MS', sans-serif;
+      background: linear-gradient(135deg, #a8edea, #fed6e3); /* soft pastel gradient */
+      color: #333;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+    }
+
+    .container {
+      display: flex;
+      background: #ffffff;
+      width: 85%;
+      max-width: 950px;
+      border-radius: 20px;
+      overflow: hidden;
+      box-shadow: 0 8px 30px rgba(0,0,0,0.15);
+    }
+
+    .form-section {
+      flex: 1.2;
+      padding: 35px;
+    }
+
+    .form-section h2 {
+      margin-bottom: 15px;
+      color: #2e7d32;
+      text-align: center;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+
+    .warning-text {
+      text-align: center;
+      font-size: 14px;
+      font-style: italic;
+      color: #555;
+      margin-bottom: 25px;
+    }
+
+    .form-group {
+      margin-bottom: 20px;
+    }
+
+    .form-group label {
+      display: block;
+      margin-bottom: 6px;
+      font-weight: bold;
+      color: #2e7d32;
+    }
+
+    .form-group input,
+    .form-group select {
+      width: 100%;
+      padding: 12px;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+      font-size: 14px;
+      background: #f9f9f9;
+      color: #333;
+      outline: none;
+      transition: 0.2s;
+    }
+
+    .form-group input:focus,
+    .form-group select:focus {
+      border-color: #66bb6a;
+      background: #fff;
+      box-shadow: 0 0 5px rgba(102,187,106,0.5);
+    }
+
+    .submit-btn {
+      background: linear-gradient(90deg, #66bb6a, #43a047);
+      color: white;
+      padding: 14px;
+      border: none;
+      border-radius: 10px;
+      cursor: pointer;
+      font-size: 16px;
+      margin-top: 20px;
+      width: 100%;
+      transition: 0.3s;
+      font-weight: bold;
+    }
+
+    .submit-btn:hover {
+      background: linear-gradient(90deg, #57a85b, #2e7d32);
+      transform: scale(1.03);
+    }
+
+    .image-section {
+      flex: 1;
+      background: #f3fef4;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      padding: 30px;
+      border-left: 1px solid #e0e0e0;
+    }
+
+    .gender-image {
+      width: 140px;
+      height: 140px;
+      border-radius: 50%;
+      border: 4px solid #66bb6a;
+      padding: 5px;
+      background: #fff;
+      box-shadow: 0 4px 15px rgba(102,187,106,0.3);
+      display: none;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+    <!-- Left Form Section -->
+    <div class="form-section">
+      <h2>🌱 Nutritional Life Journey 🌱</h2>
+      <p class="warning-text">
+        your lifestyle shapes your path of wellness.
+      </p>
+
+      <form id="lifeForm">
+        <div class="form-group">
+          <label for="name">Your Name:</label>
+          <input type="text" id="name" required>
+        </div>
+
+        <div class="form-group">
+          <label for="age">Your Age:</label>
+          <input type="number" id="age" placeholder="e.g., 25" required>
+        </div>
+
+        <div class="form-group">
+          <label for="gender">Gender:</label>
+          <select id="gender" required>
+            <option value="">-- Select Gender --</option>
+            <option value="Male">👨 Male</option>
+            <option value="Female">👩 Female</option>
+            <option value="Other">🌈 Other / Prefer not to say</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label for="location">Your Location:</label>
+          <select id="location" onchange="showFoodType()" required>
+            <option value="">-- Select Location --</option>
+            <option value="India">🇮🇳 India</option>
+            <option value="USA">🇺🇸 USA</option>
+            <option value="Europe">🇪🇺 Europe</option>
+            <option value="Japan">🇯🇵 Japan</option>
+            <option value="Other">🌍 Other</option>
+          </select>
+        </div>
+
+        <div class="form-group" id="food-type-group" style="display:none;">
+          <label for="food-type">Food Preference:</label>
+          <select id="food-type" onchange="updateFoods()" required>
+            <option value="">-- Select Food Type --</option>
+            <option value="Veg">🥗 Vegetarian</option>
+            <option value="NonVeg">🍖 Non-Vegetarian</option>
+          </select>
+        </div>
+
+        <div class="form-group" id="fav-food-group" style="display:none;">
+          <label for="fav-food">Choose Your Favorite Food:</label>
+          <select id="fav-food" required>
+            <option value="">-- Select Food --</option>
+          </select>
+        </div>
+
+        <button type="submit" class="submit-btn">Reveal My Life Days</button>
+      </form>
+    </div>
+
+    <!-- Right Image Section -->
+    <div class="image-section">
+      <img id="male-img" class="gender-image" src="https://cdn-icons-png.flaticon.com/512/145/145867.png" alt="Male">
+      <img id="female-img" class="gender-image" src="https://cdn-icons-png.flaticon.com/512/145/145852.png" alt="Female">
+      <img id="other-img" class="gender-image" src="https://cdn-icons-png.flaticon.com/512/149/149071.png" alt="Neutral">
+    </div>
+  </div>
+
+  <script>
+    const genderSelect = document.getElementById("gender");
+    const maleImg = document.getElementById("male-img");
+    const femaleImg = document.getElementById("female-img");
+    const otherImg = document.getElementById("other-img");
+    const locationSelect = document.getElementById("location");
+    const foodTypeGroup = document.getElementById("food-type-group");
+    const foodTypeSelect = document.getElementById("food-type");
+    const favFoodGroup = document.getElementById("fav-food-group");
+    const favFoodSelect = document.getElementById("fav-food");
+
+    genderSelect.addEventListener("change", () => {
+      maleImg.style.display = "none";
+      femaleImg.style.display = "none";
+      otherImg.style.display = "none";
+
+      if (genderSelect.value === "Male") maleImg.style.display = "block";
+      if (genderSelect.value === "Female") femaleImg.style.display = "block";
+      if (genderSelect.value === "Other") otherImg.style.display = "block";
+    });
+
+    function showFoodType() {
+      if (locationSelect.value) {
+        foodTypeGroup.style.display = "block";
+      } else {
+        foodTypeGroup.style.display = "none";
+        favFoodGroup.style.display = "none";
+      }
+    }
+
+    function updateFoods() {
+      const location = locationSelect.value;
+      const foodType = foodTypeSelect.value;
+      favFoodSelect.innerHTML = "";
+      
+      let foods = [];
+
+      if (location === "India") {
+        if (foodType === "Veg") {
+          foods = ["Paneer Butter Masala", "Masala Dosa", "Idli", "Chapati"];
+        } else if (foodType === "NonVeg") {
+          foods = ["Chicken Biryani", "Fish Curry", "Mutton Rogan Josh"];
+        }
+      } else if (location === "USA") {
+        if (foodType === "Veg") {
+          foods = ["Caesar Salad", "Mac & Cheese", "Veggie Burger"];
+        } else if (foodType === "NonVeg") {
+          foods = ["Grilled Chicken", "Beef Steak", "Hotdog"];
+        }
+      } else if (location === "Japan") {
+        if (foodType === "Veg") {
+          foods = ["Miso Soup", "Onigiri", "Vegetable Tempura"];
+        } else if (foodType === "NonVeg") {
+          foods = ["Sushi", "Ramen", "Chicken Teriyaki"];
+        }
+      } else {
+        foods = ["Fruits", "Rice", "Noodles", "Pizza"];
+      }
+
+      foods.forEach(food => {
+        let option = document.createElement("option");
+        option.value = food;
+        option.textContent = food;
+        favFoodSelect.appendChild(option);
+      });
+
+      favFoodGroup.style.display = "block";
+    }
+
+    document.getElementById("lifeForm").addEventListener("submit", function(event) {
+      event.preventDefault();
+
+      const userData = {
+        name: document.getElementById("name").value,
+        age: document.getElementById("age").value,
+        gender: document.getElementById("gender").value,
+        location: document.getElementById("location").value,
+        foodType: document.getElementById("food-type").value,
+        favFood: document.getElementById("fav-food").value
+      };
+
+      localStorage.setItem("lifeData", JSON.stringify(userData));
+      window.location.href = "life.html";
+    });
+  </script>
+</body>
+</html>

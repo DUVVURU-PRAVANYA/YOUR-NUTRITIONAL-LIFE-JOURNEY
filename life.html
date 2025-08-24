@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Your Nutritional Life Journey</title>
+  <link rel="stylesheet" href="life.css">
+</head>
+<body>
+  <div class="container">
+    <div class="header"><h2>🌱 Your Nutritional Life Journey 🌱</h2></div>
+
+    <div class="user-details">
+      <div class="details">
+        <p><strong>Name:</strong> <span id="resName"></span></p>
+        <p><strong>Age:</strong> <span id="resAge"></span></p>
+        <p><strong>Gender:</strong> <span id="resGender"></span></p>
+        <p><strong>Location:</strong> <span id="resLocation"></span></p>
+        <p><strong>Food Preference:</strong> <span id="resFoodType"></span></p>
+        <p><strong>Favorite Food:</strong> <span id="resFavFood"></span></p>
+      </div>
+      <div class="image">
+        <img id="genderImage" class="gender-img" src="" alt="User">
+      </div>
+    </div>
+
+    <div class="life-journey">
+      <button id="revealBtn" class="btn">Reveal Life Progress</button>
+
+      <div class="life-visual" id="lifeVisual" style="display:none;">
+        <div id="timeline">
+          <div id="progress"></div>
+          <img id="person" src="" alt="Person">
+          <img id="coffin" src="https://cdn-icons-png.flaticon.com/512/1644/1644432.png" alt="Coffin">
+        </div>
+      </div>
+
+      <div id="remainingTime"></div>
+    </div>
+  </div>
+
+  <script src="life.js"></script>
+</body>
+</html>
