@@ -6,8 +6,7 @@
   const resAge = document.getElementById("resAge");
   const resGender = document.getElementById("resGender");
   const resLocation = document.getElementById("resLocation");
-  const resFoodType = document.getElementById("resFoodType");
-  const resFavFood = document.getElementById("resFavFood");
+  const resFoods = document.getElementById("resFoods");
   const genderImage = document.getElementById("genderImage");
   const person = document.getElementById("person");
   const lifeVisual = document.getElementById("lifeVisual");
@@ -22,8 +21,7 @@
   resAge.textContent = lifeData.age || "-";
   resGender.textContent = lifeData.gender || "-";
   resLocation.textContent = lifeData.location || "-";
-  resFoodType.textContent = lifeData.foodType || "-";
-  resFavFood.textContent = lifeData.favFood || "-";
+  resFoods.textContent = lifeData.foods ? lifeData.foods.join(", ") : "-";
 
   // Avatar
   const maleURL   = "https://cdn-icons-png.flaticon.com/512/145/145867.png";
@@ -36,6 +34,20 @@
 
   genderImage.src = avatarURL;
   person.src = avatarURL;
+
+  // Food properties (must match index.html)
+  const foodProperties = {
+    "Paneer Butter Masala": { toxic: 2, energy: 50 },
+    "Masala Dosa": { toxic: 1, energy: 40 },
+    "Chicken Biryani": { toxic: 4, energy: 80 },
+    "Fish Curry": { toxic: 3, energy: 70 },
+    "Mutton Rogan Josh": { toxic: 5, energy: 90 },
+    "Caesar Salad": { toxic: 1, energy: 30 },
+    "Grilled Chicken": { toxic: 2, energy: 70 },
+    "Sushi": { toxic: 3, energy: 60 },
+    "Vegetable Tempura": { toxic: 1, energy: 35 },
+    "Pizza": { toxic: 3, energy: 60 }
+  };
 
   revealBtn.addEventListener("click", revealLife);
 
@@ -54,7 +66,20 @@
     if (lifeData.gender === "Female") avgLife += 3;
     if (lifeData.gender === "Male") avgLife -= 2;
 
-    const yearsRemaining = Math.max(0, avgLife - age);
+    // Calculate food effect
+    let toxicSum = 0, energySum = 0;
+    if (lifeData.foods) {
+      lifeData.foods.forEach(f => {
+        if (foodProperties[f]) {
+          toxicSum += foodProperties[f].toxic;
+          energySum += foodProperties[f].energy;
+        }
+      });
+    }
+
+    // Adjust lifespan
+    const adjustedLife = avgLife - toxicSum + Math.floor(energySum / 20);
+    const yearsRemaining = Math.max(0, adjustedLife - age);
     const daysLived = Math.round(age * 365.25);
     const daysRemaining = Math.round(yearsRemaining * 365.25);
 
@@ -69,10 +94,8 @@
     // Coffin fixed at end
     coffin.style.left = timelineWidth - coffinWidth + "px";
 
-    // Target X for person
-    const targetX = Math.min(age / avgLife, 1) * (timelineWidth - personWidth);
+    const targetX = Math.min(age / adjustedLife, 1) * (timelineWidth - personWidth);
 
-    // Age = 0 special case
     if (age === 0) {
       person.style.left = "0px";
       progress.style.width = "0px";
@@ -81,13 +104,11 @@
       return;
     }
 
-    // Normal age > 0, line starts green
     progress.style.background = "green";
 
-    // Animate person and line together
+    // Animate person and progress
     let startTime = null;
     const duration = 2000;
-
     function animate(timestamp) {
       if (!startTime) startTime = timestamp;
       const elapsed = timestamp - startTime;
@@ -97,11 +118,6 @@
 
       person.style.left = currentX + "px";
       progress.style.width = currentX + personWidth / 2 + "px";
-
-      // If age = 0 and reached coffin, change line to green
-      if (age === 0 && currentX >= coffin.offsetLeft) {
-        progress.style.background = "green";
-      }
 
       if (pct < 1) requestAnimationFrame(animate);
     }
