@@ -7,21 +7,20 @@
   <style>
     body {
       font-family: 'Trebuchet MS', sans-serif;
-      background: linear-gradient(135deg, #a8edea, #fed6e3); /* soft pastel gradient */
-      color: #333;
+      background: linear-gradient(135deg, #a8edea, #fed6e3);
       margin: 0;
       padding: 0;
       display: flex;
       justify-content: center;
       align-items: center;
-      height: 100vh;
+      min-height: 100vh;
     }
 
     .container {
       display: flex;
       background: #ffffff;
-      width: 85%;
-      max-width: 950px;
+      width: 90%;
+      max-width: 1000px;
       border-radius: 20px;
       overflow: hidden;
       box-shadow: 0 8px 30px rgba(0,0,0,0.15);
@@ -119,17 +118,83 @@
       box-shadow: 0 4px 15px rgba(102,187,106,0.3);
       display: none;
     }
+
+    .food-options {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 10px 20px;
+      max-height: 220px;
+      overflow-y: auto;
+      padding: 5px;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+      background: #f9f9f9;
+    }
+
+    .food-options label {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-weight: normal;
+      color: #333;
+      padding: 6px 8px;
+      border-radius: 6px;
+      background: #fff;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+      cursor: pointer;
+    }
+
+    /* Custom round checkboxes */
+    .food-options input[type="checkbox"] {
+      appearance: none;
+      -webkit-appearance: none;
+      width: 18px;
+      height: 18px;
+      border: 2px solid #66bb6a;
+      border-radius: 50%;
+      outline: none;
+      cursor: pointer;
+      position: relative;
+      transition: background 0.2s, border-color 0.2s;
+    }
+
+    .food-options input[type="checkbox"]:checked {
+      background: #66bb6a;
+      border-color: #2e7d32;
+    }
+
+    .food-options input[type="checkbox"]:checked::after {
+      content: "";
+      position: absolute;
+      top: 4px;
+      left: 4px;
+      width: 6px;
+      height: 6px;
+      background: #fff;
+      border-radius: 50%;
+    }
+
+    /* Scrollbar style */
+    .food-options::-webkit-scrollbar {
+      width: 6px;
+    }
+    .food-options::-webkit-scrollbar-thumb {
+      background: #66bb6a;
+      border-radius: 3px;
+    }
+    .food-options::-webkit-scrollbar-track {
+      background: #e0e0e0;
+      border-radius: 3px;
+    }
+
   </style>
 </head>
 <body>
 
   <div class="container">
-    <!-- Left Form Section -->
     <div class="form-section">
       <h2>🌱 Nutritional Life Journey 🌱</h2>
-      <p class="warning-text">
-        your lifestyle shapes your path of wellness.
-      </p>
+      <p class="warning-text">Your lifestyle shapes your path of wellness.</p>
 
       <form id="lifeForm">
         <div class="form-group">
@@ -154,37 +219,24 @@
 
         <div class="form-group">
           <label for="location">Your Location:</label>
-          <select id="location" onchange="showFoodType()" required>
+          <select id="location" required>
             <option value="">-- Select Location --</option>
             <option value="India">🇮🇳 India</option>
             <option value="USA">🇺🇸 USA</option>
             <option value="Europe">🇪🇺 Europe</option>
             <option value="Japan">🇯🇵 Japan</option>
-            <option value="Other">🌍 Other</option>
           </select>
         </div>
 
-        <div class="form-group" id="food-type-group" style="display:none;">
-          <label for="food-type">Food Preference:</label>
-          <select id="food-type" onchange="updateFoods()" required>
-            <option value="">-- Select Food Type --</option>
-            <option value="Veg">🥗 Vegetarian</option>
-            <option value="NonVeg">🍖 Non-Vegetarian</option>
-          </select>
-        </div>
-
-        <div class="form-group" id="fav-food-group" style="display:none;">
-          <label for="fav-food">Choose Your Favorite Food:</label>
-          <select id="fav-food" required>
-            <option value="">-- Select Food --</option>
-          </select>
+        <div class="form-group" id="food-group" style="display:none;">
+          <label>Choose 4–5 Foods:</label>
+          <div class="food-options" id="food-options"></div>
         </div>
 
         <button type="submit" class="submit-btn">Reveal My Life Days</button>
       </form>
     </div>
 
-    <!-- Right Image Section -->
     <div class="image-section">
       <img id="male-img" class="gender-image" src="https://cdn-icons-png.flaticon.com/512/145/145867.png" alt="Male">
       <img id="female-img" class="gender-image" src="https://cdn-icons-png.flaticon.com/512/145/145852.png" alt="Female">
@@ -198,10 +250,43 @@
     const femaleImg = document.getElementById("female-img");
     const otherImg = document.getElementById("other-img");
     const locationSelect = document.getElementById("location");
-    const foodTypeGroup = document.getElementById("food-type-group");
-    const foodTypeSelect = document.getElementById("food-type");
-    const favFoodGroup = document.getElementById("fav-food-group");
-    const favFoodSelect = document.getElementById("fav-food");
+    const foodGroup = document.getElementById("food-group");
+    const foodOptionsDiv = document.getElementById("food-options");
+
+    // Foods by location
+    const foodByLocation = {
+      "India": ["Paneer Butter Masala","Masala Dosa","Chicken Biryani","Fish Curry","Mutton Rogan Josh","Chole Bhature","Idli Sambar","Rajma Chawal"],
+      "USA": ["Burger","Pizza","Fried Chicken","Hot Dog","Mac & Cheese","Pancakes","BBQ Ribs","Caesar Salad"],
+      "Europe": ["Pasta","Paella","Croissant","Fish & Chips","Bratwurst","Moussaka","Goulash","Crepes"],
+      "Japan": ["Sushi","Ramen","Tempura","Okonomiyaki","Takoyaki","Sashimi","Onigiri","Udon"]
+    };
+
+    locationSelect.addEventListener("change", () => {
+      const loc = locationSelect.value;
+      if (!loc) {
+        foodGroup.style.display = "none";
+        return;
+      }
+
+      foodOptionsDiv.innerHTML = "";
+      const foods = foodByLocation[loc];
+      foods.forEach(food => {
+        const label = document.createElement("label");
+
+        const span = document.createElement("span");
+        span.textContent = food;
+
+        const checkbox = document.createElement("input");
+        checkbox.type = "checkbox";
+        checkbox.name = "foods";
+        checkbox.value = food;
+
+        label.appendChild(span);
+        label.appendChild(checkbox);
+        foodOptionsDiv.appendChild(label);
+      });
+      foodGroup.style.display = "block";
+    });
 
     genderSelect.addEventListener("change", () => {
       maleImg.style.display = "none";
@@ -213,64 +298,20 @@
       if (genderSelect.value === "Other") otherImg.style.display = "block";
     });
 
-    function showFoodType() {
-      if (locationSelect.value) {
-        foodTypeGroup.style.display = "block";
-      } else {
-        foodTypeGroup.style.display = "none";
-        favFoodGroup.style.display = "none";
+    document.getElementById("lifeForm").addEventListener("submit", function(e){
+      e.preventDefault();
+      const selectedFoods = Array.from(document.querySelectorAll('input[name="foods"]:checked')).map(cb => cb.value);
+      if (selectedFoods.length < 4 || selectedFoods.length > 5) {
+        alert("Please select 4–5 foods.");
+        return;
       }
-    }
-
-    function updateFoods() {
-      const location = locationSelect.value;
-      const foodType = foodTypeSelect.value;
-      favFoodSelect.innerHTML = "";
-      
-      let foods = [];
-
-      if (location === "India") {
-        if (foodType === "Veg") {
-          foods = ["Paneer Butter Masala", "Masala Dosa", "Idli", "Chapati"];
-        } else if (foodType === "NonVeg") {
-          foods = ["Chicken Biryani", "Fish Curry", "Mutton Rogan Josh"];
-        }
-      } else if (location === "USA") {
-        if (foodType === "Veg") {
-          foods = ["Caesar Salad", "Mac & Cheese", "Veggie Burger"];
-        } else if (foodType === "NonVeg") {
-          foods = ["Grilled Chicken", "Beef Steak", "Hotdog"];
-        }
-      } else if (location === "Japan") {
-        if (foodType === "Veg") {
-          foods = ["Miso Soup", "Onigiri", "Vegetable Tempura"];
-        } else if (foodType === "NonVeg") {
-          foods = ["Sushi", "Ramen", "Chicken Teriyaki"];
-        }
-      } else {
-        foods = ["Fruits", "Rice", "Noodles", "Pizza"];
-      }
-
-      foods.forEach(food => {
-        let option = document.createElement("option");
-        option.value = food;
-        option.textContent = food;
-        favFoodSelect.appendChild(option);
-      });
-
-      favFoodGroup.style.display = "block";
-    }
-
-    document.getElementById("lifeForm").addEventListener("submit", function(event) {
-      event.preventDefault();
 
       const userData = {
         name: document.getElementById("name").value,
-        age: document.getElementById("age").value,
-        gender: document.getElementById("gender").value,
-        location: document.getElementById("location").value,
-        foodType: document.getElementById("food-type").value,
-        favFood: document.getElementById("fav-food").value
+        age: parseInt(document.getElementById("age").value),
+        gender: genderSelect.value,
+        location: locationSelect.value,
+        foods: selectedFoods
       };
 
       localStorage.setItem("lifeData", JSON.stringify(userData));
